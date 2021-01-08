@@ -1,0 +1,116 @@
+﻿<div ng-controller="editStudent">
+    <div class="card">
+        <div class="card-header">
+            <h3>Edit Student</h3>
+        </div>
+        <div class="card-body">
+            <div ng-show="updateStudentMsg" class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Success!</strong> Data inserted.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="card-text">
+                <form name="frmUpdateStudent" ng-submit="insertStudent(frmUpdateStudent)" novalidate>
+                    <div class="form-group row">
+                        <label class="col-form-label col-form-label-sm col-2">Department</label>
+                        <div class="col-4">
+                            <select name="departmentId" ng-options="item.department.DepartmentId as item.department.DepartmentName for item in model.departments" class="form-control form-control-sm" ng-model="newStudent.DepartmentId" required>
+                                <option value="">Select</option>
+                            </select>
+                            <div class="text-danger" ng-show="frmUpdateStudent.departmentId.$error" ng-if="!frmUpdateStudent.studentName.$pristine">
+                                <div ng-show="frmUpdateStudent.departmentId.$error.required">This field is requred.</div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label col-form-label-sm col-2">Student Name</label>
+                        <div class="col-4">
+                            <input name="studentName" type="text" class="form-control form-control-sm" ng-model="newStudent.StudentName" required maxlength="40" />
+                            <div class="text-danger" ng-show="frmUpdateStudent.StudentName.$error && !frmUpdateStudent.StudentName.$pristine">
+                                <div ng-show="frmUpdateStudent.StudentName.$error.required">This field is requred.</div>
+                                <div ng-show="frmUpdateStudent.StudentName.$error.maxlength">This field is requred.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-form-label col-form-label-sm col-2">Birthday</label>
+                        <div class="col-4">
+                            <div class="input-group">
+                                <input name="birthday"
+                                       ng-model="newStudent.Birthday"
+                                       class="form-control form-control-sm"
+                                       required
+                                       uib-datepicker-popup="yyyy-MM-dd"
+                                       is-open="popup1.opened"
+                                       close-text="Close" />
+                                <span class="input-group-btn">
+                                    <button type="button"
+                                            class="btn btn-secondary btn-sm"
+                                            ng-click="open1()">
+
+                                        <i class="fa fa-calendar"></i>
+                                    </button>
+                                </span>
+                            </div>
+                            <div ng-messages="frmAddStudent.birthday.$error"
+                                 ng-show="frmAddStudent.birthday.$invalid && !frmAddStudent.birthday.$pristine">
+                                <div class="text-danger" ng-message="required">
+                                    This field is requred.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-form-label col-form-label-sm col-2">Email</label>
+                        <div class="col-4">
+                            <input type="email"
+                                   name="Email"
+                                   ng-model="newStudent.Email"
+                                   class="form-control form-control-sm"
+                                   required />
+                            <div ng-messages="frmAddStudent.Email.$error"
+                                 ng-show="frmAddStudent.Email.$invalid && !frmAddStudent.Email.$pristine">
+                                <div class="text-danger" ng-message="required">
+                                    This field is requred.
+                                </div>
+                                <div class="text-danger" ng-message="email">
+                                    Invalid email address.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-form-label col-form-label-sm col-2">Address</label>
+                        <div class="col-4">
+                            <input type="url"
+                                   name="address"
+                                   ng-model="newStudent.Address"
+                                   class="form-control form-control-sm"
+                                   required />
+                            <div ng-messages="frmAddStudent.address.$error"
+                                 ng-show="frmAddStudent.address.$invalid && !frmAddStudent.address.$pristine">
+                                <div class="text-danger" ng-message="required">
+                                    This field is requred.
+                                </div>
+                                <div class="text-danger" ng-message="address">
+                                    Invalid address
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-4 offset-2">
+                            <button type="submit" class="btn btn-primary" ng-disabled="!frmUpdateStudent.StudentName.$pristine">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a ng-href="#!/departments"><i class="fa fa-long-arrow-left"></i> Back to department list</a>
+        </div>
+    </div>
+</div>

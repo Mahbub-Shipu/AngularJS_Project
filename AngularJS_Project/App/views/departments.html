@@ -1,0 +1,104 @@
+﻿<div class="card">
+    <div class="card-header">
+        <h2 class="display-5">Department List</h2>
+    </div>
+    <div class="card-body">
+        <div class="card-text">
+            <div class="d-flex justify-content-end mb-1">
+                <a class="btn btn-success btn-sm" ng-href="#!/createDepartment"><i class="fa fa-plus"></i></a>
+            </div>
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th></th>
+                        <th>Department Name </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="data in model.departments">
+                    <tr>
+                        <td>
+                            <button ng-if="!data.isExpanded" class="btn" ng-click="expandChild($index)"><i class="fa fa-plus"></i></button>
+                            <button ng-if="data.isExpanded" class="btn" ng-click="expandChild($index)"><i class="fa fa-minus"></i></button>
+                        </td>
+                        <td>{{data.department.DepartmentName}}</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm rounded-circle" href="#!/editDepartment/{{data.department.DepartmentId}}"><i class="fa fa-pencil"></i></a>
+                            <button class="btn btn-danger btn-sm rounded-circle" ng-click="deleteDepartment($index)"><i class="fa fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr ng-if="data.isExpanded">
+                        <td>&nbsp;</td>
+                        <td colspan="6">
+                            <div class="d-flex align-items-baseline mb-1">
+                                <h3 class="card-subtitle">Students</h3>
+                                <a ng-href="#!/createStudent" class="btn btn-success btn-sm ml-auto"><i class="fa fa-plus"></i></a>
+                            </div>
+                            <table class="table table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Student Name</th>
+                                        <th>Date of Birth</th>
+                                        <th>Email</th>
+                                        <th>Address</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="s in data.department.Students">
+                                        <td>{{s.StudentName}}</td>
+                                        <td>{{s.Birthday | date: 'yyyy-MM-dd'}}</td>
+                                        <td>{{s.Email}}</td>
+                                        <td>{{s.Address}}</td>
+                                        <td>
+                                            <a class="btn btn-primary btn-sm rounded-circle" ng-href="#!/editStudent/{{s.StudentId}}"><i class="fa fa-pencil"></i></a>
+                                            <a class="btn btn-danger btn-sm rounded-circle" ng-click="delDepartmentStudent(s.DeparmentId,s.StudentId, $index)"><i class="fa fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr ng-if="data.isExpanded">
+                        <td>&nbsp;</td>
+                        <td colspan="6">
+                            <div class="d-flex align-items-baseline mb-1">
+                                <h3 class="card-subtitle">Teacher</h3>
+                                <a ng-href="#!/createTeacher" class="btn btn-success btn-sm ml-auto"><i class="fa fa-plus"></i></a>
+                            </div>
+                            <table class="table table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Teacher Name</th>
+                                        <th>Designation</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="t in data.department.Teachers">
+                                        <td>{{t.TeacherName}}</td>
+                                        <td>{{t.Designation}}</td>
+                                        <td>
+                                            <a ng-href="#!/editTeacher/{{t.TeacherName}}" class="btn btn-primary btn-sm rounded-circle"><i class="fa fa-pencil"></i></a>
+                                            <a class="btn btn-danger btn-sm rounded-circle" ng-click="delDepartmentTeacher(t.DepartmentId,t.TeacherId, $index)"><i class="fa fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    <div class="card-footer">
+        <!--<div class="d-flex justify-content-end">
+            <ul class="pagination pagination-sm">
+                <li ng-class="{active: $index+1 == currentPage}" ng-repeat="product in model.companies|pageCount:1" class="page-item">
+                    <a class="page-link" ng-click="selectPage($index + 1)" href="">{{$index+1}}</a>
+                </li>
+            </ul>
+        </div>-->
+    </div>
+</div>

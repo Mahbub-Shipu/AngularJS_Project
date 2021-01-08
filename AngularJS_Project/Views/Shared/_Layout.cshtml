@@ -1,0 +1,272 @@
+﻿<!DOCTYPE html>
+<html ng-app="projectApp">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/font-awesome.css" rel="stylesheet" />
+    <link href="~/Content/datepicker/angular-datepicker.css" rel="stylesheet" />
+</head>
+<body ng-controller="outerCtrl">
+    <div class="navbar navbar-dark bg-primary fixed-top navbar-expand-md shadow-sm border-bottom">
+        <div class="container">
+            @Html.ActionLink("AngularJS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="nav-item">@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item"><a ng-href="#!/departments" class="nav-link">Departments</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        @RenderBody()
+    </div>
+    <hr />
+    <footer class="container text-center">
+        <p>&copy; @DateTime.Now.Year - Md. Mahbubul Alom Shipu</p>
+    </footer>
+    <div class="modal" tabindex="-1" role="dialog" id="delDepartmentModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure to delete?</p>
+                    <div class="text-danger">This department and its teachers & products will be deleted?</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" ng-click="doDeleteDepartment()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script src="~/Scripts/angular.js"></script>
+    <script src="~/Scripts/angular-route.js"></script>
+    <script src="~/Scripts/angular-animate.js"></script>
+    <script src="~/Scripts/angular-messages.js"></script>
+    <script src="~/Content/ui-bootstrap4/ui-bootstrap.js"></script>
+    <script src="~/Content/ui-bootstrap4/ui-bootstrap-tpls.js"></script>
+    <script src="~/Content/datepicker/angular-datepicker.js"></script>
+    <script src="~/Scripts/angular-sanitize.js"></script>
+
+    <script>
+        angular.module("projectApp", ['ngRoute', 'ngMessages', 'ngSanitize', 'ngAnimate', "ui.bootstrap", '720kb.datepicker'])
+            .constant("apiUrl", "/api/")
+            .constant("customUrl", "/custom/")
+            .config(($routeProvider) => {
+                $routeProvider
+                    .when("/home", {
+                        templateUrl: "/App/views/home.html"
+                    })
+                    .when("/departments", {
+                        templateUrl: "/App/views/departments.html"
+                    })
+                    .when("/createDepartment", {
+                        templateUrl: "/App/views/createDepartment.html"
+                    })
+                    .when("/editDepartment/:id", {
+                        templateUrl: "/App/views/editDepartment.html"
+                    })
+                    .when("/editTeacher/:id", {
+                        templateUrl: "/App/views/editTeacher.html"
+                    })
+                    .when("/createTeacher", {
+                        templateUrl: "/App/views/createTeacher.html"
+                    })
+                    .when("/editStudent/:id", {
+                        templateUrl: "/App/views/editStudent.html"
+                    })
+                    .when("/createStudent", {
+                        templateUrl: "/App/views/createStudent.html"
+                    })
+                    .otherwise({ redirectTo: '/home' });
+
+            })
+            .controller("outerCtrl", ($scope, ApiService, apiUrl, customUrl) => {
+                //////////////////////////////
+                $scope.erroMsg = null;
+                $scope.model = {};
+                $scope.currentPage = 1;
+                $scope.totalItems = 1;
+
+                ////////////////////////////////////
+                //evets
+                $scope.$on('teacherUpdated', (evt, data) => {
+                    //console.log('Event');
+                    //console.log(data.departmentid);
+                    //console.log('Service Id' + data.ServiceId);
+                    angular.forEach($scope.model.departments, function (v, k) {
+                        if (v.department.DepartmentId == data.DepartmentId) {
+                            angular.forEach(v.department.Teachers, function (v1, k1) {
+                                if (v1.TeacherId == data.TeacherId) {
+                                    angular.copy(data, v1);
+                                    console.log(v1);
+                                }
+                            });
+                        }
+                    })
+                })
+                $scope.$on('teacherInserted', (evt, data) => {
+                    //console.log('Event');
+                    //console.log(data.departmentid);
+                    //console.log('Service Id' + data.ServiceId);
+                    angular.forEach($scope.model.departments, function (v, k) {
+                        if (v.department.DepartmentId == data.DepartmentId) {
+                            v.department.Teachers.push(data);
+                        }
+                    })
+                })
+                $scope.$on('studentInserted', (evt, data) => {
+                    console.log('Event');
+                    //console.log(data.departmentid);
+                    //console.log('Service Id' + data.ServiceId);
+                    angular.forEach($scope.model.departments, function (v, k) {
+                        if (v.department.DepartmentId == data.DepartmentId) {
+                            v.department.Students.push(data);
+                        }
+                    })
+                });
+                $scope.$on('studentUpdated', (evt, data) => {
+                    console.log('Updated');
+                    //console.log(data.departmentid);
+                    //console.log('Service Id' + data.ServiceId);
+                    angular.forEach($scope.model.departments, function (v, k) {
+                        if (v.department.DepartmentId == data.DepartmentId) {
+                            angular.forEach(v.department.Students, function (v1, k1) {
+                                if (v1.StudentId == data.StudentId) {
+                                    angular.copy(data, v1);
+                                    console.log(v1);
+                                }
+                            });
+                        }
+                    })
+                })
+                $scope.$on('departmentInserted', (evt, data) => {
+                    console.log('Event');
+                    console.log(data);
+                    //console.log('Service Id' + data.ServiceId);
+                    $scope.model.departments.push({ isExpanded: false, department: data });
+                })
+                $scope.$on('departmentUpdated', (evt, data) => {
+                    console.log('updates');
+                    console.log(data.DepartmentId);
+                    //console.log('Service Id' + data.ServiceId);
+                    angular.forEach($scope.model.departments, function (v, k) {
+                        if (v.department.DepartmentId == data.DepartmentId) {
+                            angular.copy(data, v.department);
+
+                        }
+                    })
+
+                })
+                ///////////////////////////////////////
+                $scope.departmentToDelete = null;
+                $scope.teacherToDelete = null;
+                $scope.studentToDelete = null;
+                $scope.departmentSource = null;
+                $scope.delIndex = null;
+                ApiService.get(customUrl + "Departments", null)
+                    .then(r => {
+                        $scope.model.departments = [];
+                        angular.forEach(r.data, (v, k) => {
+                            $scope.model.departments.push({ isExpanded: false, department: v });
+                        });
+                        console.log($scope.model.departments[0].department.DepartmentName);
+                        $scope.totalItems = $scope.model.departments.length;
+                    }, err => {
+                        console.log(err);
+                    });
+                $scope.expandChild = (index) => {
+                    console.log(index);
+                    $scope.model.departments[index].isExpanded = !$scope.model.departments[index].isExpanded;
+                }
+                $scope.deleteDepartment = (index) => {
+                    $scope.departmentToDelete = index;
+                    $("#delDepartmentModal").modal('show');
+                }
+                $scope.doDeleteDepartment = () => {
+                    var departmentId = $scope.model.departments[$scope.departmentToDelete].department.departmentId;
+                    ApiService.delete(apiUrl + "Departments/" + departmentId, null)
+                        .then(r => {
+                            $scope.model.departments.splice($scope.departmentToDelete, 1);
+                            $("#delDepartmentModal").modal('hide');
+                        }, err => {
+                            console.log(err);
+                        });
+                }
+                $scope.selectPage = function (pageNo) {
+                    $scope.currentPage = pageNo;
+                };
+                $scope.delDepartmentProduct = (departmentid, pid, index) => {
+                    console.log(departmentid);
+
+                    $scope.studentToDelete = pid;
+                    $scope.departmentSource = departmentid;
+                    $scope.delIndex = index;
+                    console.log($scope.departmentSource);
+                    $("#delStudentModal").modal('show');
+                }
+                $scope.delDepartmentTeacher = (departmentid, sid, index) => {
+                    $scope.teacherToDelete = sid;
+                    $scope.departmentSource = departmentid;
+                    $scope.delIndex = index;
+                    console.log($scope.departmentSource);
+                    $("#delTeacherModal").modal('show');
+                }
+                $scope.doDeleteStudent = () => {
+                    ApiService.delete(apiUrl + "Students/" + $scope.studentToDelete, null)
+                        .then(r => {
+                            angular.forEach($scope.model.departments, (v, k) => {
+
+                                if (v.departments.departmentid == $scope.departmentSource) {
+
+                                    v.department.Students.splice($scope.delIndex, 1);
+                                }
+                            })
+                            $scope.studentToDelete = null;
+                            $scope.departmentSource = null;
+                            $scope.delIndex = null;
+
+                            $("#delTeacherModal").modal('hide');
+                        }, err => { })
+                }
+                $scope.doDeleteTeacher = () => {
+                    ApiService.delete(apiUrl + "Teachers/" + $scope.teacherToDelete, null)
+                        .then(r => {
+                            angular.forEach($scope.model.departments, (v, k) => {
+
+                                if (v.department.departmentid == $scope.departmentSource) {
+
+                                    v.department.Teachers.splice($scope.delIndex, 1);
+                                }
+                            })
+                            $scope.teacherToDelete = null;
+                            $scope.departmentSource = null;
+                            $scope.delIndex = null;
+
+                            $("#delTeacherModal").modal('hide');
+                        }, err => { })
+                }
+            });
+    </script>
+    <script src="~/App/services/ApiService.js"></script>
+    <script src="~/App/filters/filters.js"></script>
+    <script src="~/App/controllers/createDepartmentCtrl.js"></script>
+    <script src="~/App/controllers/editDepartmentCtrl.js"></script>
+    <script src="~/App/controllers/createTeacher.js"></script>
+    <script src="~/App/controllers/teacherController.js"></script>
+    <script src="~/App/controllers/createStudent.js"></script>
+    <script src="~/App/controllers/editStudent.js"></script>
+</body>
+</html>
+

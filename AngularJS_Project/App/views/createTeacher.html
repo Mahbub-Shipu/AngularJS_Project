@@ -1,0 +1,68 @@
+﻿<div ng-controller="createTeacherCtrl">
+    <div class="card">
+        <div class="card-header">
+            <h3>Edit Service</h3>
+        </div>
+        <div class="card-body">
+            <div ng-show="newTeacherMsg" class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Success!</strong> Data updated.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="card-text">
+                <form name="frmCreateTeacher" ng-submit="insertService()" novalidate>
+                    <div class="form-group row">
+                        <label class="col-form-label col-form-label-sm col-2">Department</label>
+                        <div class="col-4">
+                            <select name="departmentId" ng-options="item.department.departmentId as item.department.DepartmentName for item in model.departments" class="form-control form-control-sm" ng-model="newTeacher.departmentId" required>
+                                <option value="">Select</option>
+                            </select>
+                            <div class="text-danger" ng-show="frmCreateTeacher.departmentId.$error" ng-if="frmCreateTeacher.departmentId.$touched">
+                                <div ng-show="frmCreateTeacher.departmentId.$error.required">This field is requred.</div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label col-form-label-sm col-2">Teacher Name</label>
+                        <div class="col-4">
+                            <input name="teacherName" type="text" class="form-control form-control-sm" ng-model="newTeacher.TeacherName" required maxlength="40" />
+                            <div class="text-danger" ng-show="frmCreateTeacher.teacherName.$error" ng-if="frmCreateTeacher.teacherName.$touched">
+                                <div ng-show="frmCreateTeacher.teacherName.$error.required">This field is requred.</div>
+                                <div ng-show="frmCreateTeacher.teacherName.$error.maxlength">This field is requred.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label col-form-label-sm col-2">Designation</label>
+                        <div class="col-4">
+                            <select name="designation"
+                                    class="form-control form-control-sm"
+                                    ng-model="newTeacher.Designation"
+                                    required>
+                                <option value="">Select</option>
+                                <option value="Chairman">Chairman</option>
+                                <option value="Dean">Dean</option>
+                                <option value="Professor">Professor</option>
+                                <option value="AssistantProfessor">Assistant Professor</option>
+                                <option value="Lecturer">Lecturer</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="form-group row">
+
+                        <div class="col-4 offset-2">
+                            <button type="submit" class="btn btn-primary" ng-disabled="frmCreateTeacher.$invalid">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a ng-href="#!/departments"><i class="fa fa-long-arrow-left"></i> Back to department list</a>
+        </div>
+    </div>
+</div>

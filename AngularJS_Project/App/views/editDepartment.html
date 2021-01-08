@@ -1,0 +1,274 @@
+﻿<div ng-controller="editDepartmentCtrl">
+    <div ng-if="departmentEditMsg" class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> {{departmentEditMsg}}.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <uib-tabset active="activeTab">
+        <uib-tab index="0" heading="Department" disable="true">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Edit Department</h3>
+                </div>
+                <div class="card-body">
+                    <div class="card-text">
+                        <form name="frmEditDepartment" ng-submit="departmentDone()">
+                            <div class="form-group row">
+                                <label for="" class="col-form-label col-form-label-sm col-2">Department Name</label>
+                                <div class="col-4">
+                                    <input name="departmentName"
+                                           ng-model="newDepartment.DepartmentName"
+                                           class="form-control form-control-sm"
+                                           ng-maxlength="40"
+                                           required />
+                                    <div ng-messages="frmEditDepartment.departmentName.$error"
+                                         ng-show="frmEditDepartment.departmentName.$invalid && !frmEditDepartment.departmentName.$pristine">
+                                        <div class="text-danger" ng-message="required">
+                                            This field is requred.
+                                        </div>
+                                        <div class="text-danger" ng-message="maxlength">
+                                            Field value too long.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-end mr-2">
+                                        <button type="submit"
+                                                class="btn btn-primary"
+                                                ng-disabled="frmEditDepartment.$invalid">
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </uib-tab>
+        <uib-tab index="1" heading="Products" disable="true">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Students</h2>
+                </div>
+                <div class="card-body">
+                    <div class="card-text">
+
+                        <form name="frmAddStudent"
+                              ng-submit="studentDone(frmAddStudent)"
+                              novalidate>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Student Name</th>
+                                        <th>Date of Birth</th>
+                                        <th>Email</th>
+                                        <th>Address</th>
+                                        <th style="width:90px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in students">
+                                        <td>{{item.StudentName}}</td>
+                                        <td>{{item.Birthday}}</td>
+                                        <td>{{item.Email}}</td>
+                                        <td>{{item.Address}}</td>
+                                        <td class="text-center">
+                                            <button type="button"
+                                                    class="btn btn-danger btn-sm"
+                                                    ng-click="studentDel($index)">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>
+                                            <input name="studentName"
+                                                   class="form-control form-control-sm"
+                                                   ng-model="newStudent.StudentName"
+                                                   required />
+                                            <div ng-messages="frmAddStudent.studentName.$error"
+                                                 ng-show="frmAddStudent.studentName.$invalid && !frmAddStudent.studentName.$pristine">
+                                                <div class="text-danger" ng-message="required">
+                                                    This field is requred.
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input name="birthday"
+                                                   ng-model="newStudent.Birhday"
+                                                   required
+                                                   class="form-control form-control-sm"
+                                                   uib-datepicker-popup="yyyy-MM-dd"
+                                                   is-open="popup1.opened"
+                                                   close-text="Close" />
+                                            <span class="input-group-btn">
+                                                <button type="button"
+                                                        class="btn btn-secondary btn-sm"
+                                                        ng-click="open1()">
+                                                    <i class="fa fa-calendar"></i>
+                                                </button>
+                                            </span>
+                                            <div ng-messages="frmAddStudent.birthday.$error"
+                                                 ng-show="frmAddStudent.birthday.$invalid && !frmAddStudent.birhday.$pristine">
+                                                <div class="text-danger" ng-message="required">
+                                                    This field is requred.
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input name="email"
+                                                   class="form-control form-control-sm"
+                                                   ng-model="newStudent.Email"
+                                                   required />
+                                            <div ng-messages="frmAddStudent.email.$error"
+                                                 ng-show="frmAddStudent.email.$invalid && !frmAddStudent.email.$pristine">
+                                                <div class="text-danger" ng-message="required">
+                                                    This field is requred.
+                                                </div>
+                                                <div class="text-danger" ng-message="email">
+                                                    Invalid email address.
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input name="address"
+                                                   class="form-control form-control-sm"
+                                                   ng-model="newStudent.Address"
+                                                   required />
+                                            <div ng-messages="frmAddStudent.address.$error"
+                                                 ng-show="frmAddStudent.address.$invalid && !frmAddStudent.address.$pristine">
+                                                <div class="text-danger" ng-message="required">
+                                                    This field is requred.
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-sm"
+                                                    ng-disabled="frmAddStudent.$invalid">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </form>
+                        <div class="d-flex">
+                            <button type="button"
+                                    class="btn btn-secondary btn-sm"
+                                    ng-click="studentPre()">
+                                Previous
+                            </button>
+                            <span style="flex: auto">&nbsp;</span>
+                            <button ng-disabled="products.length == 0"
+                                    type="button"
+                                    class="btn btn-primary btn-sm"
+                                    ng-click="studentNext()">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </uib-tab>
+        <uib-tab index="2" heading="Teachers" disable="true">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Teachers</h2>
+                </div>
+                <div class="card-body">
+                    <div class="card-text">
+                        <form name="frmAddTeacher" ng-submit="teacherDone(frmAddTeacher)">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Teacher Name</th>
+                                        <th>Designation</th>
+                                        <th style="width:90px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in teachers">
+                                        <td>{{item.TeacherName}}</td>
+                                        <td>{{item.Designation}}</td>
+                                        <td class="text-center">
+                                            <button type="button"
+                                                    class="btn btn-danger btn-sm"
+                                                    ng-click="teacherDel($index)">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>
+                                            <input name="teacherName"
+                                                   class="form-control form-control-sm"
+                                                   ng-model="newTeacher.TeacherName"
+                                                   required />
+                                            <div ng-messages="frmAddTeacher.teacherName.$error"
+                                                 ng-show="frmAddTeacher.teacherName.$invalid && !frmAddTeacher.teacherName.$pristine">
+                                                <div class="text-danger" ng-message="required">
+                                                    This field is requred.
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <select name="designation"
+                                                    class="form-control form-control-sm"
+                                                    ng-model="newTeacher.Designation"
+                                                    required>
+                                                <option value="">Select</option>
+                                                <option value="Chairman">Chairman</option>
+                                                <option value="Dean">Dean</option>
+                                                <option value="Professor">Professor</option>
+                                                <option value="AssistantProfessor">Assistant Professor</option>
+                                                <option value="Lecturer">Lecturer</option>
+                                            </select>
+                                            <div ng-messages="frmAddTeacher.designation.$error"
+                                                 ng-show="frmAddTeacher.designation.$invalid && !frmAddTeacher.designation.$pristine">
+                                                <div class="text-danger" ng-message="required">
+                                                    This field is requred.
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-sm"
+                                                    ng-disabled="frmAddTeacher.$invalid">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </form>
+                        <div class="d-flex">
+                            <button type="button"
+                                    class="btn btn-secondary btn-sm"
+                                    ng-click="teacherPre()">
+                                Previous
+                            </button>
+                            <span style="flex: auto">&nbsp;</span>
+                            <button ng-disabled="teachers.length == 0"
+                                    type="button"
+                                    class="btn btn-primary btn-sm"
+                                    ng-click="teacherNext([frmEditDepartment, frmAddTeacher, frmAddStudent])">
+                                Save and Finish
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </uib-tab>
+    </uib-tabset>
+</div>
